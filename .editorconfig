@@ -1,0 +1,58 @@
+# Global editorconfig unless the project has a custom one
+# Editor configuration, see https://editorconfig.org
+
+# top-most EditorConfig file
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = tab
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# PHP-Files
+[*.php]
+indent_style = space
+indent_size = 4
+
+[*.{c,cpp,h,hpp,cc,java}]
+indent_style = tab
+indent_size = 4
+max_line_length = 79
+
+# 4 space indentation
+[*.py]
+indent_style = space
+indent_size = 4
+max_line_length = 79
+
+# HTML-Files LESS-Files SASS-Files CSS-Files JS-Files, JSX-Files, TS-Files, TSX-Files, JSON-Files
+[*.{html,less,sass,css,js,jsx,ts,tsx,json}]
+indent_style = tab
+indent_size = 2
+
+[composer.json]
+indent_style = tab
+indent_size = 4
+
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+[*.{ex,exs}]
+indent_style = space
+indent_size = 2
+max_line_length = 79
+
+[*.{md,markdown}]
+indent_style = tab
+indent_size = 2
+max_line_length = off
+trim_trailing_whitespace = false
+
+# Matches the exact files either package.json or .travis.yml
+[{package.json,travis.yml}]
+indent_style = space
+indent_size = 2
