@@ -8,7 +8,7 @@ use PDOException;
 
 class SequencesController extends BaseController {
 
-    public function getSecuences($request, $response, $args) {
+    public function getSecuences(Request $request, Response $response, $args) {
 
         $pdo = $this->container->get('db');
 
@@ -28,7 +28,7 @@ class SequencesController extends BaseController {
                         ->withStatus(200);
     }
 
-    public function getLastSequence($request, $response, $args) {
+    public function getLastSequence(Request $request, Response $response, $args) {
         try {
             $pdo = $this->container->get('db');
 
@@ -47,7 +47,7 @@ class SequencesController extends BaseController {
 
             // Creare una nueva instancia de la clase
             $qrCode = new QrCode($url); // Le paso como parametro el texto recibido via ajax
-            $qrCode->setSize('400 px'); // Alteramos el tamaño por defecto
+            $qrCode->setSize(400); // Alteramos el tamaño por defecto
             $image = $qrCode->writeString(); // Salida en formato de texto
             $imageData = base64_encode($image); // Codifico la imagen usando base64_encode
             $payload = (object) ["src" => "data:image/png;base64," . $imageData]; // Salida del código QR
@@ -61,7 +61,7 @@ class SequencesController extends BaseController {
                         ->withStatus(200);
     }
 
-    public function getSecuence($request, $response, $args) {
+    public function getSecuence(Request $request, Response $response, $args) {
         $ipAddress = $request->getAttribute('ip_address');
 
         $sec = intval($request->getAttribute('sec'));
@@ -136,7 +136,7 @@ class SequencesController extends BaseController {
                         ->withStatus(200);
     }
 
-    public function getNextSecuence($request, $response, $args) {
+    public function getNextSecuence(Request $request, Response $response, $args) {
 
         $pdo = $this->container->get('db');
 
@@ -154,5 +154,28 @@ class SequencesController extends BaseController {
 
         return $response->withHeader('Content-Type', 'application/json')
                         ->withStatus(200);
+    }
+
+    public function setNextSecuence(Request $request, Response $response) {
+        $data = $request->getParsedBody();
+
+        if (array_key_exists("iduser", $data)) {
+            $iduser = filter_var($data['iduser'], FILTER_SANITIZE_STRING);
+        }
+
+        $pdo = $this->container->get('db');
+
+        $sql = "UPDATE sequences AS tableAlpha
+                INNER JOIN (SELECT MIN(sequences.sequence) AS sequence
+                            FROM sequences
+                            WHERE sequences.id_status = 2) AS tableBeta
+                ON tableAlpha.sequence = tableBeta.sequence SET
+                tableAlpha.id_user_atent = 3,
+                tableAlpha.date_atent = DATE(NOW()),
+                tableAlpha.time_atent = DATE(NOW()),
+                tableAlpha.id_status = 3;";
+        $query = $pdo->query($sql);
+
+        return $response->withStatus(200);
     }
 }

@@ -14,4 +14,5 @@ $app->group('/api/v1', function(RouteCollectorProxy $group) {
     $group->get('/sequences/lastcode', 'App\Controllers\SequencesController:getLastSequence');
     $group->get('/sequences/secuence/{sec}', 'App\Controllers\SequencesController:getSecuence');
     $group->get('/sequences/nextsequence', 'App\Controllers\SequencesController:getNextSecuence');
+    $group->post('/sequences/nextclient', 'App\Controllers\SequencesController:setNextSecuence');
 });
