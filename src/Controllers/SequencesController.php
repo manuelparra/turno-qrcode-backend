@@ -126,10 +126,29 @@ class SequencesController extends BaseController {
             $query = null;
             $pdo = null;
 
-            $payload = (object) ["turn" => $yourturn]; // Salida del código QR
+            $payload = (object) ["turn" => str_pad($yourturn, 2, "0", STR_PAD_LEFT)]; // Salida del código QR
         } catch ( PDOException $e ) {
             $payload = '{error} : {"text": ' . $e . '}';
         }
+
+        $response->getBody()->write(json_encode($payload));
+        return $response->withHeader('Content-Type', 'application/json')
+                        ->withStatus(200);
+    }
+
+    public function getNextSecuence($request, $response, $args) {
+
+        $pdo = $this->container->get('db');
+
+        $sql = "SELECT IFNULL(MIN(sequences.sequence), '--') AS sequence,
+                COUNT(sequences.sequence) AS pendings
+                FROM sequences
+                WHERE sequences.id_status = 2;";
+
+        $query = $pdo->query($sql);
+        $result = $query->fetch();
+
+        $payload = (object) ["sec" => str_pad($result->sequence, 2, "0", STR_PAD_LEFT), "pen" => $result->pendings]; // Salida del código QR
 
         $response->getBody()->write(json_encode($payload));
 
