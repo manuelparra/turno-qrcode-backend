@@ -40,7 +40,7 @@ class SequencesController extends BaseController {
             $result = $query->fetch();
             $sequence = $result->sequence;
 
-            $url = 'https://numeros.papiro.es/turno/' . $sequence;
+            $url = 'https://atencion.papiro.es/turno/' . $sequence;
 
             $query = null;
             $pdo = null;
@@ -67,8 +67,6 @@ class SequencesController extends BaseController {
         $sec = intval($request->getAttribute('sec'));
 
         $yourturn = "";
-
-        //$payload = (object) ["sec" => $sec, "ip" => $ipAddress, "fecha" => date("Y-m-d")];
 
         try {
             $pdo = $this->container->get('db');
@@ -139,11 +137,6 @@ class SequencesController extends BaseController {
     public function getNextSecuence(Request $request, Response $response, $args) {
 
         $pdo = $this->container->get('db');
-        /*
-        $sql = "SELECT IFNULL(MIN(sequences.sequence), '--') AS sequence,
-                COUNT(sequences.sequence) AS pendings
-                FROM sequences
-                WHERE sequences.id_status = 2;";*/
 
         $sql = "SELECT IFNULL(MIN(sequences.sequence), '--') AS sequence,
                 IFNULL(MIN(sequences.turn), '--') AS turn,
