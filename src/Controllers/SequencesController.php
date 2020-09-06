@@ -139,16 +139,22 @@ class SequencesController extends BaseController {
     public function getNextSecuence(Request $request, Response $response, $args) {
 
         $pdo = $this->container->get('db');
-
+        /*
         $sql = "SELECT IFNULL(MIN(sequences.sequence), '--') AS sequence,
                 COUNT(sequences.sequence) AS pendings
                 FROM sequences
+                WHERE sequences.id_status = 2;";*/
+
+        $sql = "SELECT IFNULL(MIN(sequences.sequence), '--') AS sequence,
+                IFNULL(MIN(sequences.turn), '--') AS turn,
+                COUNT(sequences.sequence) AS pendings
+                FROM qr_turn.sequences
                 WHERE sequences.id_status = 2;";
 
         $query = $pdo->query($sql);
         $result = $query->fetch();
 
-        $payload = (object) ["sec" => str_pad($result->sequence, 2, "0", STR_PAD_LEFT), "pen" => $result->pendings]; // Salida del código QR
+        $payload = (object) ["sec" => str_pad($result->turn, 2, "0", STR_PAD_LEFT), "pen" => $result->pendings]; // Salida del código QR
 
         $response->getBody()->write(json_encode($payload));
 
@@ -172,7 +178,7 @@ class SequencesController extends BaseController {
                 ON tableAlpha.sequence = tableBeta.sequence SET
                 tableAlpha.id_user_atent = 3,
                 tableAlpha.date_atent = DATE(NOW()),
-                tableAlpha.time_atent = DATE(NOW()),
+                tableAlpha.time_atent = TIME(NOW()),
                 tableAlpha.id_status = 3;";
         $query = $pdo->query($sql);
 
